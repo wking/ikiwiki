@@ -18,7 +18,7 @@ sub import {
 	hook(type => "getsetup", id => "inline", call => \&getsetup);
 	hook(type => "checkconfig", id => "inline", call => \&checkconfig);
 	hook(type => "sessioncgi", id => "inline", call => \&sessioncgi);
-	hook(type => "preprocess", id => "inline", 
+	hook(type => "preprocess", id => "inline",
 		call => \&IkiWiki::preprocess_inline);
 	hook(type => "pagetemplate", id => "inline",
 		call => \&IkiWiki::pagetemplate_inline);
@@ -40,7 +40,7 @@ sub getopt () {
 		"allowatom!" => \$config{allowatom},
 		"pingurl=s" => sub {
 			push @{$config{pingurl}}, $_[1];
-		},      
+		},
 	);
 }
 
@@ -104,7 +104,7 @@ sub checkconfig () {
 }
 
 sub format (@) {
-        my %params=@_;
+	my %params=@_;
 
 	# Fill in the inline content generated earlier. This is actually an
 	# optimisation.
@@ -151,7 +151,7 @@ my %feedlinks;
 
 sub preprocess_inline (@) {
 	my %params=@_;
-	
+
 	if (! exists $params{pages} && ! exists $params{pagenames}) {
 		error gettext("missing pages parameter");
 	}
@@ -171,7 +171,7 @@ sub preprocess_inline (@) {
 	}
 	my $desc;
 	if (exists $params{description}) {
-		$desc = $params{description} 
+		$desc = $params{description}
 	}
 	else {
 		$desc = $config{wikiname};
@@ -195,7 +195,7 @@ sub preprocess_inline (@) {
 		}
 
 		@list = map { bestlink($params{page}, $_) }
-		        split ' ', $params{pagenames};
+			split ' ', $params{pagenames};
 
 		if (yesno($params{reverse})) {
 			@list=reverse(@list);
@@ -229,7 +229,7 @@ sub preprocess_inline (@) {
 	if (exists $params{skip}) {
 		@list=@list[$params{skip} .. $#list];
 	}
-	
+
 	my @feedlist;
 	if ($feeds) {
 		if (exists $params{feedshow} &&
@@ -240,7 +240,7 @@ sub preprocess_inline (@) {
 			@feedlist=@list;
 		}
 	}
-	
+
 	if ($params{show} && @list > $params{show}) {
 		@list=@list[0..$params{show} - 1];
 	}
@@ -256,7 +256,7 @@ sub preprocess_inline (@) {
 	my ($feedbase, $feednum);
 	if ($feeds) {
 		# Ensure that multiple feeds on a page go to unique files.
-		
+
 		# Feedfile can lead to conflicts if usedirs is not enabled,
 		# so avoid supporting it in that case.
 		delete $params{feedfile} if ! $config{usedirs};
@@ -313,7 +313,7 @@ sub preprocess_inline (@) {
 				gettext("Add a new post titled:"));
 		}
 		$ret.=$formtemplate->output;
-	    	
+
 		# The post form includes the feed buttons, so
 		# emptyfeeds cannot be hidden.
 		$emptyfeeds=1;
@@ -325,7 +325,7 @@ sub preprocess_inline (@) {
 		$linktemplate->param(atomurl => $atomurl) if $atom;
 		$ret.=$linktemplate->output;
 	}
-	
+
 	if (! $feedonly) {
 		my $template;
 		if (! $raw) {
@@ -340,7 +340,7 @@ sub preprocess_inline (@) {
 			}
 		}
 		my $needcontent=$raw || (!($archive && $quick) && $template->query(name => 'content'));
-	
+
 		foreach my $page (@list) {
 			my $file = $pagesources{$page};
 			my $type = pagetype($file);
@@ -360,7 +360,7 @@ sub preprocess_inline (@) {
 				$template->param(first => 1) if $page eq $list[0];
 				$template->param(last => 1) if $page eq $list[$#list];
 				$template->param(html5 => $config{html5});
-	
+
 				if ($actions) {
 					my $file = $pagesources{$page};
 					my $type = pagetype($file);
@@ -385,12 +385,12 @@ sub preprocess_inline (@) {
 
 					}
 				}
-	
+
 				run_hooks(pagetemplate => sub {
 					shift->(page => $page, destpage => $params{destpage},
 						template => $template,);
 				});
-	
+
 				$ret.=$template->output;
 				$template->clear_params;
 			}
@@ -409,7 +409,7 @@ sub preprocess_inline (@) {
 			}
 		}
 	}
-	
+
 	if ($feeds && ($emptyfeeds || @feedlist)) {
 		if ($rss) {
 			my $rssp=$feedbase."rss".$feednum;
@@ -433,7 +433,7 @@ sub preprocess_inline (@) {
 			}
 		}
 	}
-	
+
 	clear_inline_content_cache();
 
 	return $ret if $raw || $nested;
@@ -457,7 +457,7 @@ my $cached_destpage="";
 sub get_inline_content ($$) {
 	my $page=shift;
 	my $destpage=shift;
-	
+
 	if (exists $inline_content{$page} && $cached_destpage eq $destpage) {
 		return $inline_content{$page};
 	}
@@ -481,7 +481,7 @@ sub get_inline_content ($$) {
 			});
 		}
 	}
-	
+
 	if ($cached_destpage ne $destpage) {
 		clear_inline_content_cache();
 		$cached_destpage=$destpage;
@@ -513,16 +513,16 @@ sub absolute_urls ($$) {
 	my $url=$baseurl;
 	$url=~s/[^\/]+$//;
 
-        # what is the non path part of the url?
-        my $top_uri = URI->new($url);
-        $top_uri->path_query(""); # reset the path
-        my $urltop = $top_uri->as_string;
+	# what is the non path part of the url?
+	my $top_uri = URI->new($url);
+	$top_uri->path_query(""); # reset the path
+	my $urltop = $top_uri->as_string;
 
 	$content=~s/(<a(?:\s+(?:class|id)\s*="?\w+"?)?)\s+href=\s*"(#[^"]+)"/$1 href="$baseurl$2"/mig;
-        # relative to another wiki page
+	# relative to another wiki page
 	$content=~s/(<a(?:\s+(?:class|id)\s*="?\w+"?)?)\s+href=\s*"(?!\w+:)([^\/][^"]*)"/$1 href="$url$2"/mig;
 	$content=~s/(<img(?:\s+(?:class|id|width|height)\s*="?\w+"?)*)\s+src=\s*"(?!\w+:)([^\/][^"]*)"/$1 src="$url$2"/mig;
-        # relative to the top of the site
+	# relative to the top of the site
 	$content=~s/(<a(?:\s+(?:class|id)\s*="?\w+"?)?)\s+href=\s*"(?!\w+:)(\/[^"]*)"/$1 href="$urltop$2"/mig;
 	$content=~s/(<img(?:\s+(?:class|id|width|height)\s*="?\w+"?)*)\s+src=\s*"(?!\w+:)(\/[^"]*)"/$1 src="$urltop$2"/mig;
 	return $content;
@@ -535,9 +535,9 @@ sub genfeed ($$$$$@) {
 	my $guid=shift;
 	my $page=shift;
 	my @pages=@_;
-	
+
 	my $url=URI->new(encode_utf8(urlto($page,"",1)));
-	
+
 	my $itemtemplate=template_depends($feedtype."item.tmpl", $page, blind_cache => 1);
 	my $content="";
 	my $lasttime = 0;
@@ -618,7 +618,7 @@ sub genfeed ($$$$$@) {
 		shift->(page => $page, destpage => $page,
 			template => $template);
 	});
-	
+
 	return $template->output;
 }
 
