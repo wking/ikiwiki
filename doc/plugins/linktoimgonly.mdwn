@@ -1,0 +1,7 @@
+[[!template id=plugin name=linktoimgonly author="W. Trevor King"]]
+[[!tag type/widget]]
+
+This plugin provides the [[ikiwiki/directive/ltio]]
+[[ikiwiki/directive]].  Ikiwiki [[inlines WikiLinks to
+images|ikiwiki/WikiLinnk]], but sometimes you want a text link
+instead.  The `ltio` directive forces a text link.
