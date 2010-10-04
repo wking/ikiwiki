@@ -1,0 +1,10 @@
+[[!meta robots="noindex, follow"]]
+
+[itex][] is a math markup language that resembles LaTeX.  You can
+translate itex to MathML with tools such as [itex2MML][].  The
+[[plugins/mdwn_itex]] plugin can be used to automatically convert
+embedded itex to MathML for pages that otherwise use the [[markdown]]
+markup language.
+
+[itex]: http://golem.ph.utexas.edu/~distler/blog/itex2MMLcommands.html
+[itex2MML]: http://golem.ph.utexas.edu/~distler/blog/itex2MML.html
