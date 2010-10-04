@@ -1,0 +1,67 @@
+[[!template id=plugin name=mdwn core=0 author="[[W. Trevor King]]"]]
+[[!tag type/format]]
+
+This plugin lets ikwiki convert files with names ending in
+`.mdwn_itex` to html.  It uses the [[ikiwiki/markdown]] minimal markup
+language with embedded [[ikiwiki/itex]].  The itex portion of the
+processing is handled by [itex2MML][], which converts the itex to
+[MathML][].  The markdown portion of the processing is handled by the
+[[mdwn]] plugin, so alternative markdown implementations are supported
+by configuring that plugin.
+
+In order to generate valid pages with MathML, you'll need to patch your
+templates to use an appropriate `DOCTYPE`:
+
+    diff -ru /usr/share/ikiwiki/templates/page.tmpl .ikiwiki/templates/page.tmpl
+    --- /usr/share/ikiwiki/templates/page.tmpl	2010-09-30 08:58:51.000000000 -0400
+    +++ .ikiwiki/templates/page.tmpl	2010-09-30 09:10:02.000000000 -0400
+    @@ -1,8 +1,12 @@
+     <TMPL_IF HTML5><!DOCTYPE html>
+     <html>
+    -<TMPL_ELSE><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    - "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    -<html xmlns="http://www.w3.org/1999/xhtml">
+    +<TMPL_ELSE><?xml version="1.0" encoding="UTF-8"?>
+    +<!DOCTYPE html PUBLIC
+    +    "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"
+    +    "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+    +<html xmlns="http://www.w3.org/1999/xhtml"
+    +      xmlns:math="http://www.w3.org/1998/Math/MathML"
+    +      xmlns:svg="http://www.w3.org/2000/svg">
+     </TMPL_IF>
+     <head>
+     <TMPL_IF DYNAMIC>
+
+To setup the plugin, add config options along the lines of:
+
+    # plugins to add to the default configuration
+    add_plugins => [qw{ ... mdwn_itex ...}],
+    # plugins to disable
+    disable_plugins => [qw{... htmlscrubber htmltidy ...}],
+
+    # location of template files
+    templatedir => '/path/to/patched/templates',
+
+    # mdwn_itex plugin
+    # path to the itex2MML binary
+    itex2mml => '/usr/local/bin/itex2MML',
+    # autonumber display equations?
+    itex_num_equations => 1,
+
+Create new files with the `.mdwn_itex` extension, and start
+including itex:
+
+    Euler's identity
+
+    \[ e^{i \pi} + 1 = 0 \]
+
+    has lots of fun constants: $e$, $i$, $\pi$, $1$, and $0$.
+
+The [[htmlscrubber]] and [[htmltidy]] plugins must be disabled because
+otherwise they [strip][scrubber_strip] [out][tidy_strip] the MathML
+markup.
+
+[itex2MML]: http://golem.ph.utexas.edu/~distler/blog/itex2MML.html
+[MathML]: http://www.w3.org/Math/
+[scrubber_strip]: http://ikiwiki.info/todo/svg/
+[tidy_strip]: http://lists.w3.org/Archives/Public/html-tidy/2006JanMar/0052.html
