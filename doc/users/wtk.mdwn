@@ -1,0 +1,6 @@
+[[!meta title="W. Trevor King"]]
+
+W. Trevor King is <a href="mailto:wking@drexel.edu">wking@drexel.edu</a>.
+His web page is [here](http://www.physics.drexel.edu/~wking/) and his
+ikiwiki-based blog is
+[here](http://www.physics.drexel.edu/~wking/unfolding-disasters/)

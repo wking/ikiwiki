@@ -1,0 +1,15 @@
+The `ltio` directive is supplied by the [[!iki plugins/linktoimgonly
+desc=linktoimgonly]] plugin.
+
+By default ikiwiki [[inlines WikiLinks to images|ikiwiki/WikiLinnk]],
+but sometimes you want a text link instead.  The `ltio` directive
+forces a text link.
+
+## usage
+
+	\[[!ltio image1.jpg]]
+
+The image file will be searched for using the same rules as used to find
+the file pointed to by a [[ikiwiki/WikiLink]].
+
+[[!meta robots="noindex, follow"]]

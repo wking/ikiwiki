@@ -67,3 +67,4 @@ Any hints? --[[jerojasro]]
 	    linktext => $params{text},
 	    noimageinline => 1);
 
+>>>>>> Added [[plugins/linktoimgonly]] plugin to ikiwiki repository.  --[[wtk]]
