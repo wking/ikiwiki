@@ -1,4 +1,4 @@
-[[!template id=plugin name=mdwn core=0 author="[[W. Trevor King]]"]]
+[[!template id=plugin name=mdwn_itex core=0 author="[[W. Trevor King]]"]]
 [[!tag type/format]]
 
 This plugin lets ikwiki convert files with names ending in
