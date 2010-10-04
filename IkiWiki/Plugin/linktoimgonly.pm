@@ -11,8 +11,16 @@ sub import {
 }
 
 sub preprocess {
-    my %params = @_;
-    return "<a href='" . bestlink($params{"page"}, $params{"img"}) . "'>" . $params{"text"} . "</a>";
+    my ($image) = $_[0] =~ /$config{wiki_file_regexp}/; # untaint
+    my %params=@_;
+
+    if (! defined $image) {
+	error("bad image filename");
+    }
+
+    return htmllink($params{page}, $params{destpage}, $image,
+		    linktext => $params{text},
+		    noimageinline => 1);
 }
 
 1
