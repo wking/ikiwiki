@@ -695,6 +695,9 @@ sub isinternal ($) {
 sub pagetype ($) {
 	my $file=shift;
 	
+        if (! $file) {
+		error("Missing file.");
+        }
 	if ($file =~ /\.([^.]+)$/) {
 		return $1 if exists $hooks{htmlize}{$1};
 	}

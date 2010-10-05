@@ -1,0 +1,25 @@
+<TMPL_IF HTML5><article class="inlinepage"><TMPL_ELSE><div class="inlinepage"></TMPL_IF>
+
+<TMPL_IF HTML5><section class="inlineheader"><TMPL_ELSE><div class="inlineheader"></TMPL_IF>
+<TMPL_IF HTML5><header class="header"><TMPL_ELSE><span class="header"></TMPL_IF>
+<TMPL_IF PERMALINK>
+<a href="<TMPL_VAR PERMALINK>"><TMPL_VAR TITLE></a>
+<TMPL_ELSE>
+<a href="<TMPL_VAR PAGEURL>"><TMPL_VAR TITLE></a>
+</TMPL_IF>
+<TMPL_IF HTML5></header><TMPL_ELSE></span></TMPL_IF>
+<TMPL_IF HTML5></section><TMPL_ELSE></div></TMPL_IF>
+
+<TMPL_IF HTML5><section class="inlinecontent"><TMPL_ELSE><div class="inlinecontent"></TMPL_IF>
+<pre><code>
+<TMPL_VAR CONTENT>
+</code></pre>
+<TMPL_IF HTML5></section><TMPL_ELSE></div></TMPL_IF>
+
+<TMPL_IF HTML5><footer class="inlinefooter"><TMPL_ELSE><div class="inlinefooter"></TMPL_IF>
+<span class="pagedate">
+Posted <TMPL_VAR CTIME>
+</span>
+<TMPL_IF HTML5></footer><TMPL_ELSE></div></TMPL_IF>
+
+<TMPL_IF HTML5></article><TMPL_ELSE></div></TMPL_IF>

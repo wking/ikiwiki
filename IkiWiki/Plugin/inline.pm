@@ -86,6 +86,13 @@ sub getsetup () {
 			safe => 1,
 			rebuild => 0,
 		},
+		raw_templates => {
+			type => "string",
+			example => [qw{raw}],
+			description => "templates for which you want raw content",
+			safe => 0,
+			rebuild => 1,
+		},
 }
 
 sub checkconfig () {
@@ -345,11 +352,13 @@ sub preprocess_inline (@) {
 			my $file = $pagesources{$page};
 			my $type = pagetype($file);
 			if (! $raw) {
+				# is $params{template} in $config{raw_templates}?
+				my $read_raw = grep {$_ eq $params{template}} @{$config{raw_templates}};
 				if ($needcontent) {
 					# Get the content before populating the
 					# template, since getting the content uses
 					# the same template if inlines are nested.
-					my $content=get_inline_content($page, $params{destpage});
+					my $content=get_inline_content($page, $params{destpage}, $read_raw);
 					$template->param(content => $content);
 				}
 				$template->param(pageurl => urlto($page, $params{destpage}));
@@ -454,9 +463,10 @@ sub pagetemplate_inline (@) {
 my %inline_content;
 my $cached_destpage="";
 
-sub get_inline_content ($$) {
+sub get_inline_content ($$$) {
 	my $page=shift;
 	my $destpage=shift;
+	my $read_raw=shift;
 
 	if (exists $inline_content{$page} && $cached_destpage eq $destpage) {
 		return $inline_content{$page};
@@ -465,21 +475,23 @@ sub get_inline_content ($$) {
 	my $file=$pagesources{$page};
 	my $type=pagetype($file);
 	my $ret="";
+	$nested++;
 	if (defined $type) {
-		$nested++;
 		$ret=htmlize($page, $destpage, $type,
-		       linkify($page, $destpage,
-		       preprocess($page, $destpage,
-		       filter($page, $destpage,
-		       readfile(srcfile($file))))));
-		$nested--;
-		if (isinternal($page)) {
-			# make inlined text of internal pages searchable
-			run_hooks(indexhtml => sub {
-				shift->(page => $page, destpage => $page,
-					content => $ret);
+		             linkify($page, $destpage,
+		             preprocess($page, $destpage,
+		             filter($page, $destpage,
+		             readfile(srcfile($file))))));
+	} elsif ($read_raw) {
+		$ret=readfile(srcfile($file));
+	}
+	$nested--;
+	if (isinternal($page)) {
+		# make inlined text of internal pages searchable
+		run_hooks(indexhtml => sub {
+			shift->(page => $page, destpage => $page,
+				content => $ret);
 			});
-		}
 	}
 
 	if ($cached_destpage ne $destpage) {
@@ -538,12 +550,15 @@ sub genfeed ($$$$$@) {
 
 	my $url=URI->new(encode_utf8(urlto($page,"",1)));
 
-	my $itemtemplate=template_depends($feedtype."item.tmpl", $page, blind_cache => 1);
+	my $template=$feedtype."item";
+	my $itemtemplate=template_depends($template.".tmpl", $page, blind_cache => 1);
 	my $content="";
 	my $lasttime = 0;
 	foreach my $p (@pages) {
 		my $u=URI->new(encode_utf8(urlto($p, "", 1)));
-		my $pcontent = absolute_urls(get_inline_content($p, $page), $url);
+		# is $params{template} in $config{raw_templates}?
+		my $read_raw = grep {$_ eq $template} @{$config{raw_templates}};
+		my $pcontent = absolute_urls(get_inline_content($p, $page, $read_raw), $url);
 
 		$itemtemplate->param(
 			title => pagetitle(basename($p)),
@@ -602,7 +617,7 @@ sub genfeed ($$$$$@) {
 		$lasttime = $pagemtime{$p} if $pagemtime{$p} > $lasttime;
 	}
 
-	my $template=template_depends($feedtype."page.tmpl", $page, blind_cache => 1);
+	$template=template_depends($feedtype."page.tmpl", $page, blind_cache => 1);
 	$template->param(
 		title => $page ne "index" ? pagetitle($page) : $config{wikiname},
 		wikiname => $config{wikiname},
