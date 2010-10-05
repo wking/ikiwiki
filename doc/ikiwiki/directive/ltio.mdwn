@@ -1,7 +1,7 @@
 The `ltio` directive is supplied by the [[!iki plugins/linktoimgonly
 desc=linktoimgonly]] plugin.
 
-By default ikiwiki [[inlines WikiLinks to images|ikiwiki/WikiLinnk]],
+By default ikiwiki [[inlines WikiLinks to images|ikiwiki/WikiLink]],
 but sometimes you want a text link instead.  The `ltio` directive
 forces a text link.
 
