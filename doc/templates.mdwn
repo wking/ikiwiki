@@ -53,6 +53,7 @@ html out of ikiwiki and in the templates.
 * `atompage.tmpl` - Used for generating atom feeds for blogs.
 * `atomitem.tmpl` - Used for generating individual items on atom feeds.
 * `inlinepage.tmpl` - Used for displaying a post in a blog.
+* `raw.tmpl` - Used for inlining a file without markup.
 * `archivepage.tmpl` - Used for listing a page in a blog archive page.
 * `titlepage.tmpl` - Used for listing a page by title in a blog archive page.
 * `microblog.tmpl` - Used for showing a microblogging post inline.
