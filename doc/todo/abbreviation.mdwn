@@ -4,4 +4,7 @@ We might want some kind of abbreviation and acronym plugin. --[[JoshTriplett]]
 
  * The python-markdown-extras package has support for [abbreviations](http://www.freewisdom.org/projects/python-markdown/Abbreviations), with the syntax that you just use the abbreviation in text (e.g. HTML) and then define the abbreviations at the end (like "footnote-style" links). For consistency, it might be good to use the same syntax, which apparently derives from [PHP-markdown-extra](http://michelf.com/projects/php-markdown/extra/#abbr).
 
+> See [http://gemal.dk/mt/acronym.html] for a [Movable Type][MT]
+> plugin (I've emailed Henrik Gemal to ask about licensing). --[[wtk]]
+
 [[wishlist]]
