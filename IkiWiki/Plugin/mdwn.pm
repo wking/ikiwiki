@@ -25,9 +25,23 @@ sub getsetup () {
 			safe => 1,
 			rebuild => 1,
 		},
+		markdown_path => {
+			type => "string",
+			example => 0,
+			description => "path to an external markdown binary",
+			safe => 0,
+			rebuild => undef,
+		},
+}
+
+sub checkconfig () {
+	if (! defined $config{markdown_path}) {
+		$config{markdown_path}="/usr/bin/markdown";
+	}
 }
 
 my $markdown_sub;
+my $tempdir;
 sub htmlize (@) {
 	my %params=@_;
 	my $content = $params{content};
@@ -38,13 +52,33 @@ sub htmlize (@) {
 		no warnings 'once';
 		$blosxom::version="is a proper perl module too much to ask?";
 		use warnings 'all';
-
-		if (exists $config{multimarkdown} && $config{multimarkdown}) {
+	
+		if ($config{markdown_path}) {
+                        eval q{use File::Temp};
+                        if ($@) {
+                                debug(gettext("markdown_path is set, but File::Temp is not installed"));
+                        }
+			else {
+				debug("Markdown: $config{markdown_path}");
+				$tempdir=File::Temp::tempdir( CLEANUP => 1 );
+				$markdown_sub=sub {
+					my $content=shift;
+					my $fh;
+					my $filename;
+					($fh, $filename) = File::Temp::tempfile( DIR => $tempdir );
+					print $fh "$content\n";
+					close($fh);
+					$content = `$config{markdown_path} $filename`;
+					return $content;
+				}
+			}
+		} elsif (exists $config{multimarkdown} && $config{multimarkdown}) {
 			eval q{use Text::MultiMarkdown};
 			if ($@) {
 				debug(gettext("multimarkdown is enabled, but Text::MultiMarkdown is not installed"));
 			}
 			else {
+				debug("Markdown: Text::MultiMarkdown::markdown()");
 				$markdown_sub=sub {
 					Text::MultiMarkdown::markdown(shift, {use_metadata => 0});
 				}
@@ -54,21 +88,22 @@ sub htmlize (@) {
 			eval q{use Text::Markdown};
 			if (! $@) {
 				if (Text::Markdown->can('markdown')) {
+					debug("Markdown: Text::Markdown::markdown()");
 					$markdown_sub=\&Text::Markdown::markdown;
 				}
 				else {
+					debug("Markdown: Text::Markdown::Markdown()");
 					$markdown_sub=\&Text::Markdown::Markdown;
 				}
 			}
 			else {
 				eval q{use Markdown};
 				if (! $@) {
+					debug("Markdown: Markdown::Markdown()");
 					$markdown_sub=\&Markdown::Markdown;
 				}
 				else {
-					do "/usr/bin/markdown" ||
-						error(sprintf(gettext("failed to load Markdown.pm perl module (%s) or /usr/bin/markdown (%s)"), $@, $!));
-					$markdown_sub=\&Markdown::Markdown;
+					error(sprintf(gettext("failed to load Markdown.pm perl module (%s) or $config{markdown_path} (%s)"), $@, $!));
 				}
 			}
 		}
