@@ -44,17 +44,19 @@ sub checkconfig () {
 	if (! defined $config{emacs_org_options}) {
 		# See http://orgmode.org/org.html#Publishing-options
 		$config{emacs_org_options}='--batch '.
-			'--load org '. # =$HOME/lib/emacs/org.el
-			'--eval "(setq '.
-				"org-export-author-info 'nil ".
-				"org-export-headline-levels 3 ".
-				"org-export-html-preamble 'nil ".
-				"org-export-html-postamble 'nil ".
-				"org-export-with-toc 'nil ".
-				"org-export-skip-text-before-1st-heading t ".
-			')" '.
+			#q{--eval '(setq load-path (cons "~/share/emacs/site-lisp" load-path))' }.
+			'--load org '. # $HOME/share/emacs/site-lisp/org.el
+			q{--eval "(setq org-export-author-info 'nil)" }.
+			q{--eval "(setq org-export-headline-levels 3)" }.
+			q{--eval "(setq org-export-html-preamble 'nil)" }.
+			q{--eval "(setq org-export-html-postamble 'nil)" }.
+			q{--eval "(setq org-export-with-toc 'nil)" }.
+			q{--eval "(setq org-export-skip-text-before-1st-heading t)" }.
 			"--visit FILE ".
-			q{--eval "(org-export-as-html-to-buffer 'nil)" }.
+			'--funcall org-mode '.
+			#q{--eval "(org-export-as-html-to-buffer 'nil)" }. # does not expose body-only option
+			'--funcall mark-whole-buffer '.
+			'--funcall org-replace-region-by-html '.
 			q{--eval '(set-visited-file-name "/dev/stdout")' }.
 			'--funcall save-buffer ';
 	}
