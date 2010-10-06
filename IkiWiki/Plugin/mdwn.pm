@@ -27,17 +27,11 @@ sub getsetup () {
 		},
 		markdown_path => {
 			type => "string",
-			example => 0,
+			example => 0, # /usr/bin/markdown
 			description => "path to an external markdown binary",
 			safe => 0,
 			rebuild => undef,
 		},
-}
-
-sub checkconfig () {
-	if (! defined $config{markdown_path}) {
-		$config{markdown_path}="/usr/bin/markdown";
-	}
 }
 
 my $markdown_sub;
