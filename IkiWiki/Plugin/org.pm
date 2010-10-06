@@ -4,6 +4,7 @@ package IkiWiki::Plugin::org;
 
 use warnings;
 use strict;
+use utf8;
 use File::Temp;
 use IkiWiki 3.00;
 
@@ -81,6 +82,7 @@ sub htmlize (@) {
 	#$args =~ s/FILE/posts\/Git\/notes.org/g;
 	debug("Executing: $args");
 	my $content = `$args`;
+	utf8::decode($content);
 	return $content;
 }
 
