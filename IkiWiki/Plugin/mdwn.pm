@@ -97,7 +97,7 @@ sub htmlize (@) {
 					$markdown_sub=\&Markdown::Markdown;
 				}
 				else {
-					error(sprintf(gettext("failed to load Markdown.pm perl module (%s) or $config{markdown_path} (%s)"), $@, $!));
+					error("failed to load Markdown.pm perl module or $config{markdown_path}");
 				}
 			}
 		}
