@@ -5,6 +5,7 @@ package IkiWiki::Plugin::inline;
 use warnings;
 use strict;
 use Encode;
+use HTML::Entities;
 use IkiWiki 3.00;
 use URI;
 
@@ -483,7 +484,7 @@ sub get_inline_content ($$$) {
 		             filter($page, $destpage,
 		             readfile(srcfile($file))))));
 	} elsif ($read_raw) {
-		$ret=readfile(srcfile($file));
+		$ret=encode_entities(readfile(srcfile($file)), '<>&');
 	}
 	$nested--;
 	if (isinternal($page)) {
