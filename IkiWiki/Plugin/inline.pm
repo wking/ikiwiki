@@ -484,7 +484,8 @@ sub get_inline_content ($$$) {
 		             filter($page, $destpage,
 		             readfile(srcfile($file))))));
 	} elsif ($read_raw) {
-		$ret=encode_entities(readfile(srcfile($file)), '<>&');
+		$ret=HTML::Entities::encode_entities(
+			readfile(srcfile($file)), '<>&');
 	}
 	$nested--;
 	if (isinternal($page)) {
