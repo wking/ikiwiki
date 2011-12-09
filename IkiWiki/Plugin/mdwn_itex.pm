@@ -153,7 +153,7 @@ itex2MML and itex2MML Movable Type Plugin
 =head1 SEE ALSO
 
 W. Trevor King's blog entry for this plugin:
-http://www.physics.drexel.edu/~wking/unfolding-disasters/posts/mdwn_itex/
+http://blog.tremily.us/posts/mdwn_itex/
 
 Jason Blevins' ikiwiki plugin:
 http://jblevins.org/git/ikiwiki/plugins.git/plain/mdwn_itex.pm
